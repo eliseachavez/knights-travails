@@ -24,20 +24,29 @@ module Display
       circle: "\u25EF"
     }
 
-  def black_bg; "\e[40m #{self} \e[0m "end
+  def black_bg; p "\e[40m #{self} \e[0m" end
   def white_bg; p "\e[47m #{self} \e[0m" end
 
   def print_board(board)
     flipflop = true
     count = 0
-    board.each do
-      if count == 10
+    board.each do |cell|
+      if count == 8
         puts nil
         count = 0
+        flipflop = !flipflop
       end
-      flipflop ? "".white_bg : "".black_bg
+      flipflop ? white_bg_print : black_bg_print
       flipflop = !flipflop
       count += 1
     end
+  end
+
+  def white_bg_print
+    print "\e[47m \u265E \e[0m"
+  end
+
+  def black_bg_print
+    print "\e[40m \u2658 \e[0m"
   end
 end
