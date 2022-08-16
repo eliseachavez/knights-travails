@@ -3,6 +3,8 @@
 # Class for the knight chess piece
 class Knight
   @visited
-  def visited?
+  def initialize
   end
+
+
 end
