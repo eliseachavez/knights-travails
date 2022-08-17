@@ -51,7 +51,7 @@ class Board
     end
     #   3. Iterate through each neighbor now, making a recursive call with a queue
     # that now has a new array for each neighbor fused with the path of its parent
-    start_cell.neighbors.each do |neighbor|
+    coord.neighbors.each do |neighbor|
       knight_moves(neighbor, end_cell, visited, queue)
     end
   end
