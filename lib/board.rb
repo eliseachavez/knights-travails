@@ -9,7 +9,6 @@ class Board
 
   def initialize
     @board = make_board
-    knight_moves
   end
 
   def make_board
@@ -20,10 +19,10 @@ class Board
     ary1.each do |x|
       ary2.each do |y|
         cell = Cell.new([x, y])
-        cell.neighbors.push([x + 2, y + 1]) if in_bounds?(x, y)
-        cell.neighbors.push([x + 2, y - 1]) if in_bounds?(x, y)
-        cell.neighbors.push([x - 2, y + 1]) if in_bounds?(x, y)
-        cell.neighbors.push([x - 2, y - 1]) if in_bounds?(x, y)
+        cell.neighbors.push([x + 2, y + 1]) if in_bounds?(x + 2, y + 1)
+        cell.neighbors.push([x + 2, y - 1]) if in_bounds?(x + 2, y - 1)
+        cell.neighbors.push([x - 2, y + 1]) if in_bounds?(x - 2, y + 1)
+        cell.neighbors.push([x - 2, y - 1]) if in_bounds?(x - 2, y - 1)
         ary.push(cell)
       end
     end
@@ -31,23 +30,44 @@ class Board
   end
 
   def in_bounds?(x, y)
-    (x.positive? && x < 7) && (y.positive? && y < 7) ? true : false
+    (x > -1 && x < 8) && (y > -1 && y < 8) ? true : false
   end
 
-  def knight_moves(coord1, coord2, visited = [], path = [])
-    # return shortest_path if path[path.length - 1] == coord2
+  def knight_moves(coord1, coord2, visited = [], path = [], final_path = [])
+    if coord1 == coord2
+      path.push(coord1)
+      final_path.push(path)
+      orig_cell = find_cell(path[0])
+      orig_cell.neighbors.each do |neighbor|
+        if !visited.include?(neighbor)
+          knight_moves(path[0], coord1, visited, [], final_path)
+        else
+          return visited_func(coord1, coord2, visited, path, final_path)
+        end
+      end
+    end
 
     cell = find_cell(coord1)
+    visited.push(cell.coord)
+    path.push(cell.coord)
     cell.neighbors.each do |neighbor|
-      path.push(knight_moves(neighbor, coord2)) unless visited.include?(neighbor)
+      knight_moves(neighbor, coord2, visited, path, final_path) unless visited.include?(neighbor)
     end
-    visited.push(cell)
+    path
+  end
+
+  def visited_func(x, y, visited, path, final_path)
+    puts "made it!"
   end
 
   def find_cell(coord)
     # Find a cell by its coordinates and return it
+    node = nil
     @board.each do |cell|
-      return cell if cell.coord == coord
+      node = cell if cell.coord == coord
     end
+    node
   end
 end
+
+
