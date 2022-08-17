@@ -51,14 +51,16 @@ class Board
             child_q = queue[index].clone
             child_q.push(neighbor)
             queue.push(child_q)
+            if child_q.size == 5 # All the neighbors have been added
+              #   3. Iterate through each neighbor now, making a recursive call with a queue
+              # that now has a new array for each neighbor fused with the path of its parent
+              cell.neighbors.each do |cell_neighbor|
+                knight_moves(cell_neighbor, end_coord, visited, queue)
+              end
+            end
           end
         end
       end
-    end
-    #   3. Iterate through each neighbor now, making a recursive call with a queue
-    # that now has a new array for each neighbor fused with the path of its parent
-    cell.neighbors.each do |neighbor|
-      knight_moves(neighbor, end_coord, visited, queue)
     end
   end
 
