@@ -33,36 +33,39 @@ class Board
     (x > -1 && x < 8) && (y > -1 && y < 8) ? true : false
   end
 
+
   def knight_moves(coord, end_coord, visited = [], queue = [[coord]])
+    visited.push(coord)
     if coord == end_coord
-      # Because this is breadt-first traversal, first time we hit end_coord
-      # it's automatically the shortest path
-      pp queue.last
-      return queue.last
-    end
-    #   1. Look in queue for an array in the queue that ends with the current ("parent" cell)
-    cell = find_cell(coord)
-    queue.each_with_index do |queue_path, index|
-      if queue_path.last == coord
-        #   2. For each neighbor ("child") that current cell has that hasn't been visited:
-        # create a new array and push the current cell and all its neighbors to it
-        cell.neighbors.each_with_index do |neighbor, neighbor_idx|
-          if !visited.include?(neighbor)
-            child_q = queue[index].clone
-            child_q.push(neighbor)
-            queue.push(child_q)
-            if neighbor_idx == 3
-              #   3. Iterate through each neighbor now, making a recursive call with a queue
-              # that now has a new array for each neighbor fused with the path of its parent
-              cell.neighbors.each do |cell_neighbor|
-                knight_moves(cell_neighbor, end_coord, visited, queue)
+      # Look through our list. Is there another list that has an end coordinate?
+      puts "hi"
+      print_path(queue)
+    else
+      #   1. Look in queue for an array in the queue that ends with the current ("parent" cell)
+      cell = find_cell(coord)
+      queue.each_with_index do |queue_path, index|
+        if queue_path.last == coord
+          #   2. For each neighbor ("child") that current cell has that hasn't been visited:
+          # create a new array and push the current cell and all its neighbors to it
+          cell.neighbors.each_with_index do |neighbor, neighbor_idx|
+            if !visited.include?(neighbor)
+              child_q = queue[index].clone
+              child_q.push(neighbor)
+              queue.push(child_q)
+              if neighbor_idx == 3
+                #   3. Iterate through each neighbor now, making a recursive call with a queue
+                # that now has a new array for each neighbor fused with the path of its parent
+                cell.neighbors.each do |cell_neighbor|
+                  knight_moves(cell_neighbor, end_coord, visited, queue) unless visited.include?(cell_neighbor)
+                end
               end
             end
           end
         end
       end
     end
-
+    puts "hi"
+    pp "#{queue}"
   end
 
   def find_cell(coord)
