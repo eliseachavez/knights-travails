@@ -34,6 +34,12 @@ class Board
   end
 
   def knight_moves(coord, end_coord, visited = [], queue = [[coord]])
+    if coord == end_coord
+      # Because this is breadt-first traversal, first time we hit end_coord
+      # it's automatically the shortest path
+      pp queue.last
+      return queue.last
+    end
     #   1. Look in queue for an array in the queue that ends with the current ("parent" cell)
     cell = find_cell(coord)
     queue.each_with_index do |queue_path, index|
@@ -51,8 +57,8 @@ class Board
     end
     #   3. Iterate through each neighbor now, making a recursive call with a queue
     # that now has a new array for each neighbor fused with the path of its parent
-    coord.neighbors.each do |neighbor|
-      knight_moves(neighbor, end_cell, visited, queue)
+    cell.neighbors.each do |neighbor|
+      knight_moves(neighbor, end_coord, visited, queue)
     end
   end
 
