@@ -46,12 +46,12 @@ class Board
       if queue_path.last == coord
         #   2. For each neighbor ("child") that current cell has that hasn't been visited:
         # create a new array and push the current cell and all its neighbors to it
-        cell.neighbors.each do |neighbor|
+        cell.neighbors.each_with_index do |neighbor, neighbor_idx|
           if !visited.include?(neighbor)
             child_q = queue[index].clone
             child_q.push(neighbor)
             queue.push(child_q)
-            if child_q.size == 5 # All the neighbors have been added
+            if neighbor_idx == 3
               #   3. Iterate through each neighbor now, making a recursive call with a queue
               # that now has a new array for each neighbor fused with the path of its parent
               cell.neighbors.each do |cell_neighbor|
@@ -62,6 +62,7 @@ class Board
         end
       end
     end
+
   end
 
   def find_cell(coord)
