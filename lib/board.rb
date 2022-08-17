@@ -33,31 +33,17 @@ class Board
     (x > -1 && x < 8) && (y > -1 && y < 8) ? true : false
   end
 
-  def knight_moves(coord1, coord2, visited = [], path = [], final_path = [])
+  def knight_moves(coord1, coord2, visited = [], queue = [])
+    # by doing level order recursion, we can choose at the level where we find coord1 first and therefore the shortest path
     if coord1 == coord2
-      path.push(coord1)
-      final_path.push(path)
-      orig_cell = find_cell(path[0])
-      orig_cell.neighbors.each do |neighbor|
-        if !visited.include?(neighbor)
-          knight_moves(path[0], coord1, visited, [], final_path)
-        else
-          return visited_func(coord1, coord2, visited, path, final_path)
-        end
-      end
+      puts "filler"
     end
-
     cell = find_cell(coord1)
-    visited.push(cell.coord)
-    path.push(cell.coord)
+    visited.push(cell)
     cell.neighbors.each do |neighbor|
-      knight_moves(neighbor, coord2, visited, path, final_path) unless visited.include?(neighbor)
+      queue.push(knight_moves(neighbor, coord2, visited, queue)) unless visited.include?(neighbor)
     end
-    path
-  end
-
-  def visited_func(x, y, visited, path, final_path)
-    puts "made it!"
+    cell
   end
 
   def find_cell(coord)
