@@ -33,12 +33,26 @@ class Board
     (x > -1 && x < 8) && (y > -1 && y < 8) ? true : false
   end
 
-  def knight_moves
+  def knight_moves(start_cell, end_cell, visited = [], queue = [start_cell])
     #   1. Look in queue for an array in the queue that ends with the current ("parent" cell)
-    #   2. For each neighbor ("child") that current cell has that hasn't been visited:
-    # create a new array and push the current cell and all its neighbors to it
+    queue.each_with_index do |queue_path, index|
+      if queue_path.last == start_cell
+        #   2. For each neighbor ("child") that current cell has that hasn't been visited:
+        # create a new array and push the current cell and all its neighbors to it
+        start_cell.neighbors.each do |neighbor|
+          if !visited.include?(neighbor)
+            child_q = queue[index].clone
+            child_q.push(neighbor)
+            queue.push(child_q)
+          end
+        end
+      end
+    end
     #   3. Iterate through each neighbor now, making a recursive call with a queue
     # that now has a new array for each neighbor fused with the path of its parent
+    start_cell.neighbors.each do |neighbor|
+      knight_moves(neighbor, end_cell, visited, queue)
+    end
   end
 
   # def knight_moves(coord1, coord2, visited = [], queue = [])
