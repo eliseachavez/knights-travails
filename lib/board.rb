@@ -10,7 +10,7 @@ class Board
   def initialize
     @board = make_board
     @size = 64
-    @path_options = []
+    @path_options = [[]]
   end
 
   def make_board
@@ -35,6 +35,29 @@ class Board
     (x > -1 && x < 8) && (y > -1 && y < 8) ? true : false
   end
 
+  def knight_moves(coord1, coord2, visited = [])
+    # build visited list: count each cell visited (only count the first time)
+    @path_options.each do |path|
+      path.each { |cell| visited.push(cell) unless visited.include?(cell) }
+    end
+
+    if visited.size < 64
+      find_a_path(coord1, coord2)
+    else # we have visited every cell, now find SHORTEST path
+      shortest_path = get_shortest_path
+    end
+    shortest_path
+  end
+
+  def shortest_path
+    min = Array.new(65, [3,3])
+    @path_options.each do |path|
+      if path.size < min.size
+        min = path
+      end
+    end
+  end
+
   def find_a_path(coord1, coord2, visited = [])
     visited.push(coord1)
 
@@ -44,15 +67,23 @@ class Board
     else
       cell = find_cell(coord1)
       cell.neighbors.each do |neighbor|
-        find_a_path(neighbor, coord2, visited) unless visited_or_in_existing_path?(visited, neighbor)
+        find_a_path(neighbor, coord2, visited) unless visited_or_is_an_existing_path?(visited, neighbor)
       end
     end
   end
 
-  def visited_or_in_existing_path?(visited, neighbor)
+  def visited_or_is_an_existing_path?(visited, neighbor)
     # check that it isn't in current visited
-    visited.include?(neighbor) || @path_options.any? { |path| path.include?(neighbor) } ? true : false
+    visited.include?(neighbor) || is_an_existing_path?(visited) ? true : false
     # check that it isn't in
+  end
+
+  def is_an_existing_path?(visited)
+    visited = false
+    @path_options.each do |path|
+      visited = true if path == visited
+    end
+    visited
   end
 
   def all_nodes_visited?(visited)
