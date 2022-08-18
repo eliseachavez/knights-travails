@@ -58,6 +58,7 @@ class Board
   end
 
   def find_a_path(coord1, coord2, visited = [])
+    # how do I exit after I've found the LAST path? because it will always keep looking for the next one
     visited.push(coord1)
 
     if coord1 == coord2
@@ -66,23 +67,22 @@ class Board
     else
       cell = find_cell(coord1)
       cell.neighbors.each do |neighbor|
-        find_a_path(neighbor, coord2, visited) unless visited_or_is_an_existing_path?(visited, neighbor)
+        unless visited.include?(neighbor)
+          unless is_an_existing_path?(visited, neighbor)
+            find_a_path(neighbor, coord2, visited)
+          end
+        end
       end
     end
   end
 
-  def visited_or_is_an_existing_path?(visited, neighbor)
-    # check that it isn't in current visited
+  def is_an_existing_path?(visited, neighbor)
     visited_with_neighbor_added = visited.clone
     visited_with_neighbor_added.push(neighbor)
-    visited.include?(neighbor) || is_an_existing_path?(visited_with_neighbor_added) ? true : false
-    # check that it isn't in
-  end
 
-  def is_an_existing_path?(visited)
     visited = false
     @path_options.each do |path|
-      visited = true if path == visited
+      visited = true if path == visited_with_neighbor_added
     end
     visited
   end
