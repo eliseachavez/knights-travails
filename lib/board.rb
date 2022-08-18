@@ -36,17 +36,16 @@ class Board
   end
 
   def knight_moves(coord1, coord2, visited = [])
-    # build visited list: count each cell visited (only count the first time)
-    @path_options.each do |path|
-      path.each { |cell| visited.push(cell) unless visited.include?(cell) }
-    end
-
-    if visited.size < 64
+    until visited.size == 64
+      puts "hi"
       find_a_path(coord1, coord2)
-    else # we have visited every cell, now find SHORTEST path
-      shortest_path = get_shortest_path
+      # build visited list: count each cell visited (only count the first time)
+      @path_options.each do |path|
+        path.each { |cell| visited.push(cell) unless visited.include?(cell) }
+      end
     end
-    shortest_path
+    # we have visited every cell, now find SHORTEST path
+    shortest_path = get_shortest_path
   end
 
   def shortest_path
@@ -74,7 +73,9 @@ class Board
 
   def visited_or_is_an_existing_path?(visited, neighbor)
     # check that it isn't in current visited
-    visited.include?(neighbor) || is_an_existing_path?(visited) ? true : false
+    visited_with_neighbor_added = visited.clone
+    visited_with_neighbor_added.push(neighbor)
+    visited.include?(neighbor) || is_an_existing_path?(visited_with_neighbor_added) ? true : false
     # check that it isn't in
   end
 
