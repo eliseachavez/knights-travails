@@ -9,6 +9,8 @@ class Board
 
   def initialize
     @board = make_board
+    @size = 64
+    @path_options = []
   end
 
   def make_board
@@ -33,39 +35,28 @@ class Board
     (x > -1 && x < 8) && (y > -1 && y < 8) ? true : false
   end
 
+  def find_a_path(coord1, coord2, visited = [])
+    visited.push(coord1)
 
-  def knight_moves(coord, end_coord, visited = [], queue = [[coord]])
-    visited.push(coord)
-    if coord == end_coord
-      # Look through our list. Is there another list that has an end coordinate?
-      puts "hi"
-      print_path(queue)
+    if coord1 == coord2
+      new_path = visited.clone
+      @path_options.push(new_path)
     else
-      #   1. Look in queue for an array in the queue that ends with the current ("parent" cell)
-      cell = find_cell(coord)
-      queue.each_with_index do |queue_path, index|
-        if queue_path.last == coord
-          #   2. For each neighbor ("child") that current cell has that hasn't been visited:
-          # create a new array and push the current cell and all its neighbors to it
-          cell.neighbors.each_with_index do |neighbor, neighbor_idx|
-            if !visited.include?(neighbor)
-              child_q = queue[index].clone
-              child_q.push(neighbor)
-              queue.push(child_q)
-              if neighbor_idx == 3
-                #   3. Iterate through each neighbor now, making a recursive call with a queue
-                # that now has a new array for each neighbor fused with the path of its parent
-                cell.neighbors.each do |cell_neighbor|
-                  knight_moves(cell_neighbor, end_coord, visited, queue) unless visited.include?(cell_neighbor)
-                end
-              end
-            end
-          end
-        end
+      cell = find_cell(coord1)
+      cell.neighbors.each do |neighbor|
+        find_a_path(neighbor, coord2, visited) unless visited_or_in_existing_path?(visited, neighbor)
       end
     end
-    puts "hi"
-    pp "#{queue}"
+  end
+
+  def visited_or_in_existing_path?(visited, neighbor)
+    # check that it isn't in current visited
+    visited.include?(neighbor) || @path_options.any? { |path| path.include?(neighbor) } ? true : false
+    # check that it isn't in
+  end
+
+  def all_nodes_visited?(visited)
+    visited.size == @board.size ? true : false
   end
 
   def find_cell(coord)
@@ -77,5 +68,3 @@ class Board
     node
   end
 end
-
-
