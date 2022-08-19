@@ -48,7 +48,7 @@ class Board
     shortest_path = get_shortest_path
   end
 
-  def shortest_path
+  def get_shortest_path
     min = Array.new(65, [3,3])
     @path_options.each do |path|
       if path.size < min.size
@@ -59,6 +59,14 @@ class Board
 
   def find_a_path(coord1, coord2, visited = [])
     # how do I exit after I've found the LAST path? because it will always keep looking for the next one
+    # check that all possible paths haven't already been found:
+    total_visited = []
+    @path_options.each do |path|
+      path.each { |cell| total_visited.push(cell) unless total_visited.include?(cell) }
+    end
+
+    #if total_visited.size < 64
+
     visited.push(coord1)
 
     if coord1 == coord2
