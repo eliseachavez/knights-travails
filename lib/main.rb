@@ -5,7 +5,7 @@ require_relative 'board'
 board = Board.new
 
 # example travels
-shortest_path = board.knight_moves([3, 3], [7, 5]) # 3,3 - 5,4 - 7,5
+shortest_path = board.knight_moves([3, 3], [7, 3]) # 3,3 - 5,4 - 7,5
 # puts "shortest path is #{shortest_path}"
 # path = board.knight_moves([3, 3], [7, 7]) # 3,3 - 5,4 - 7,5 - 5,6 - 7,7
 # pp path

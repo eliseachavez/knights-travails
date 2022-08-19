@@ -40,16 +40,37 @@ class Board
     pp coord1
     cell = find_cell(coord1)
     visited.push(coord1)
-    return if coord1 == coord2
 
-    until queue.empty?
+    @path_options.push([coord1]) if @path_options.size == 1
+
+    until coord1 == coord2
       # remove current node and insert all neighbors to queue now
-      queue.shift
+      parent = queue.shift
+      # find path with parent as last node
+      parent_path = find_existing_path_with_parent_as_last_node(parent)
+
       cell.neighbors.each do |neighbor|
+        child_path = parent_path.clone
         queue.push(neighbor) unless in_visited_or_queue?(neighbor, queue, visited)
+        child_path.push(neighbor) # connect parent to child
+        @path_options.push(child_path)
+        # find path that ends in parent
       end
       knight_moves(queue.first, coord2, visited, queue)
     end
+    shortest_path = find_shortest_path
+  end
+
+  def find_shortest_path
+    puts "in shortest path"
+  end
+
+  def find_existing_path_with_parent_as_last_node(parent)
+    parent_path = nil
+    @path_options.each do |path|
+      parent_path = path if path.last == parent
+    end
+    parent_path
   end
 
   def in_visited_or_queue?(coord, queue, visited)
