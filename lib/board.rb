@@ -35,68 +35,25 @@ class Board
     (x > -1 && x < 8) && (y > -1 && y < 8) ? true : false
   end
 
-  def knight_moves(coord1, coord2, visited = [])
-    until visited.size == 64
-      puts "hi"
-      find_a_path(coord1, coord2)
-      # build visited list: count each cell visited (only count the first time)
-      @path_options.each do |path|
-        path.each { |cell| visited.push(cell) unless visited.include?(cell) }
-      end
-    end
-    # we have visited every cell, now find SHORTEST path
-    shortest_path = get_shortest_path
-  end
-
-  def get_shortest_path
-    min = Array.new(65, [3,3])
-    @path_options.each do |path|
-      if path.size < min.size
-        min = path
-      end
-    end
-  end
-
-  def find_a_path(coord1, coord2, visited = [])
-    # how do I exit after I've found the LAST path? because it will always keep looking for the next one
-    # check that all possible paths haven't already been found:
-    total_visited = []
-    @path_options.each do |path|
-      path.each { |cell| total_visited.push(cell) unless total_visited.include?(cell) }
-    end
-
-    #if total_visited.size < 64
-
+  def knight_moves(coord1, coord2, visited = [], queue = [coord1])
+    # YOU DON"T GO TO ANOTHER LEVEL UNTIL YOU HAVE VISITED ALL NEIGHBORS
+    pp coord1
+    cell = find_cell(coord1)
     visited.push(coord1)
+    return if coord1 == coord2
 
-    if coord1 == coord2
-      new_path = visited.clone
-      @path_options.push(new_path)
-    else
-      cell = find_cell(coord1)
+    until queue.empty?
+      # remove current node and insert all neighbors to queue now
+      queue.shift
       cell.neighbors.each do |neighbor|
-        unless visited.include?(neighbor)
-          unless is_an_existing_path?(visited, neighbor)
-            find_a_path(neighbor, coord2, visited)
-          end
-        end
+        queue.push(neighbor) unless in_visited_or_queue?(neighbor, queue, visited)
       end
+      knight_moves(queue.first, coord2, visited, queue)
     end
   end
 
-  def is_an_existing_path?(visited, neighbor)
-    visited_with_neighbor_added = visited.clone
-    visited_with_neighbor_added.push(neighbor)
-
-    visited = false
-    @path_options.each do |path|
-      visited = true if path == visited_with_neighbor_added
-    end
-    visited
-  end
-
-  def all_nodes_visited?(visited)
-    visited.size == @board.size ? true : false
+  def in_visited_or_queue?(coord, queue, visited)
+    visited.include?(coord) || queue.include?(coord) ? true : false
   end
 
   def find_cell(coord)
