@@ -35,29 +35,35 @@ class Board
     (x > -1 && x < 8) && (y > -1 && y < 8) ? true : false
   end
 
-  def knight_moves(coord1, coord2, visited = [], queue = [coord1], shortest_path = nil)
-    # YOU DON"T GO TO ANOTHER LEVEL UNTIL YOU HAVE VISITED ALL NEIGHBORS
-    return if !shortest_path.nil?
+  def knight_moves(coord1, coord2)
+    shortest_path = find_path(coord1, coord2)
+    clear_path_options
+    shortest_path
+  end
 
-    cell = find_cell(coord1)
+  def find_path(coord1, coord2, visited = [], queue = [coord1], shortest_path = nil)
+    # YOU DON"T GO TO ANOTHER LEVEL UNTIL YOU HAVE VISITED ALL NEIGHBORS
+    return shortest_path if !shortest_path.nil?
+
     visited.push(coord1)
 
     @path_options.push([coord1]) if @path_options.size == 1
 
-    until coord1 == coord2  || !shortest_path.nil?
+    until queue.size.zero?
+      puts "why am I here" if coord1 == coord2
       # remove current node and insert all neighbors to queue now
       parent = queue.shift
       # find path with parent as last node
       parent_path = find_existing_path_with_parent_as_last_node(parent)
 
+      cell = find_cell(coord1)
       cell.neighbors.each do |neighbor|
         child_path = parent_path.clone
         queue.push(neighbor) unless in_visited_or_queue?(neighbor, queue, visited)
         child_path.push(neighbor) # connect parent to child
         @path_options.push(child_path)
-        # find path that ends in parent
       end
-      shortest_path = knight_moves(queue.first, coord2, visited, queue, shortest_path)
+      shortest_path = find_path(queue.first, coord2, visited, queue, shortest_path)
     end
     find_shortest_path(coord2)
   end
@@ -96,5 +102,9 @@ class Board
       node = cell if cell.coord == coord
     end
     node
+  end
+
+  def clear_path_options
+    @path_options = [[]]
   end
 end
