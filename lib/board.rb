@@ -36,7 +36,7 @@ class Board
   end
 
   def knight_moves(coord1, coord2, visited = [])
-    until visited.size == 64
+    if visited.size < 64
       puts "hi"
       find_a_path(coord1, coord2)
       # build visited list: count each cell visited (only count the first time)
@@ -74,12 +74,16 @@ class Board
       @path_options.push(new_path)
     else
       cell = find_cell(coord1)
-      cell.neighbors.each do |neighbor|
-        unless visited.include?(neighbor)
-          unless is_an_existing_path?(visited, neighbor)
-            find_a_path(neighbor, coord2, visited)
+      begin
+        cell.neighbors.each do |neighbor|
+          unless visited.include?(neighbor)
+            unless is_an_existing_path?(visited, neighbor)
+              find_a_path(neighbor, coord2, visited)
+            end
           end
         end
+      rescue StandarError => e
+        puts "In the rescue block, exception is #{e}"
       end
     end
   end
