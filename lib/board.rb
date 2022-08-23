@@ -37,7 +37,6 @@ class Board
 
   def knight_moves(coord1, coord2, visited = [])
     if visited.size < 64
-      puts "hi"
       find_a_path(coord1, coord2)
       # build visited list: count each cell visited (only count the first time)
       @path_options.each do |path|
